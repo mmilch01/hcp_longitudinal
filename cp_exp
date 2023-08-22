@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then 
+    echo "copy experiment from the CHPC mount to local dir to create HCP style processing."
+    echo "usage: cp_exp <experiment_name>"
+    exit -1
+fi
+EXP=$1
+EXPDIR=/ceph/intradb/archive/CinaB/CCF_HCA_STG/$EXP
+TD=/data/hcp/$EXP/unprocessed/3T
+t1w=T1w_MPR_vNav_4e_e1e2_mean
+t2w=T2w_SPC_vNav
+remote_node=login3.chpc.wustl.edu
+
+
+mkdir -p $TD/$t1w $TD/$t2w
+echo rsync -ruavL mmilchenko@$remote_node:$EXPDIR/unprocessed/$t1w/*.json :$EXPDIR/unprocessed/$t1w/*.gz :$EXPDIR/unprocessed/$t2w/*.json :$EXPDIR/unprocessed/$t2w/*.gz $TD
+rsync -ruavL mmilchenko@$remote_node:$EXPDIR/unprocessed/$t1w/*.json :$EXPDIR/unprocessed/$t1w/*.gz :$EXPDIR/unprocessed/$t2w/*.json :$EXPDIR/unprocessed/$t2w/*.gz $TD
+
+mv $TD/*_T1w_* $TD/$t1w/
+mv $TD/*_T2w_* $TD/$t2w/
